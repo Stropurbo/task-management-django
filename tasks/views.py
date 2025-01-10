@@ -6,3 +6,6 @@ def home(request):
 
 def show_task(request):
     return HttpResponse("This is show task page... ")
+
+def show_dynamic_task(request, id):
+    return HttpResponse(f'This is dynamic task {id}')
