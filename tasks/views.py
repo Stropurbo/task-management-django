@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from tasks.forms import TaskForm, TaskModelForm
-from tasks.models import Employee, Task
+from tasks.models import Employee, Task, TaskDetail
+from django.db.models import Q, Count
 
 def dashboard(request):
     return render(request, "dashboard/manager_dashboard.html")
@@ -41,5 +42,9 @@ def create_task(request):
 
     #retrive all data from tasks model
 def view_task(request):
-    task = Task.objects.all()
-    return render(request, "show_task.html", {"task": task})
+    # task = Task.objects.select_related('details').all()
+    # tasks = TaskDetail.objects.select_related('task').all()
+    # tasks = Task.objects.select_related('project').all() for foreign key 
+    # tasks = Task.objects.select_related('project').all()  
+    tasks = Task.objects.prefetch_related('assigned_to').all()  
+    return render(request, "show_task.html", {"tasks": tasks})

@@ -8,8 +8,15 @@
 <body>
     <div>
         <ul>
-            {% for ta in task %}
-                <li>{{ta.status}}</li>
+            {% for ta in tasks %}
+                <li>
+                    <p>{{ta.title}}</p>
+                    {% for emp in ta.assigned_to.all %}
+                        <p>{{emp.name}}</p>
+                    {% endfor %}
+                   
+                    
+                </li>
             {% endfor %}
         </ul>
     </div>
