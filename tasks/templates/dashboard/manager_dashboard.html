@@ -6,10 +6,21 @@ Manager Dashboard
         {% block tasks %}
 
 <!-- task table -->     
- 
+    <div>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="p-2 {% if 'success' in message.tags %}bg-green-500{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+
+
         <div class="mt-8 bg-white p-5 shadow-sm rounded-xl" >
 
-            <div class="task flex items-center justify-between grid grid-cols-4">
+            <div class="task items-center justify-between grid grid-cols-4">
                 <div class="font-bold text-gray-500"> Task Table</div>
                 <div class="font-bold text-gray-500">Priority</div>
                 <div class="font-bold text-gray-500">Team</div>
@@ -18,32 +29,66 @@ Manager Dashboard
         
             <!-- task item -->
             <div class="divide-b divide-gray-100 mt-5">
+
+                {% for task in tasks %}            
         
                 <div class="grid grid-cols-4 gap-4 items-center">
         
                     <div class="flex items-center gap-3">
                         <div class="w-2 h-2 bg-green-400 rounded-full"></div>
-                        <div><span class="text-gray-500 font-bold">Test Low Task</span></div>
+                        <div>
+                            <span class="text-gray-500 font-bold"> {{task.title}} </span>                            
+                        </div>        
+                        <a href="{% url 'update-task' task.id %}" class='bg-green-500 rounded-md p-1'>
+                            Edit
+                        </a>
+
+                        <form action="{% url 'delete-task' task.id %}" method='POST'>
+                            {% csrf_token %}
+                            <button type='submit' class='bg-red-500 rounded-md p-1'>
+                                Delete
+                            </button>
+                        </form>
+
+                       
+                        
                     </div>
                     <div >
-                       <span class="px-3 py-1 bg-blue-100 rounded-full text-blue-500 font-bold text-sm">Low</span>
+                       <span class="px-3 py-1 bg-blue-100 rounded-full text-blue-500 font-bold text-sm">
+                        {{task.details.get_priority_display}}
+                    </span>
                     </div>
         
                     <div class="flex -space-x-2">
+                        {% for emp in task.assigned_to.all %}
+
                         <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm">
-                            CA
+                            {{emp.name|slice:1}}
                         </div>
-                        <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm">
-                            JS
+                        
+                        {% endfor %}
+                
                         </div>
-                        <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm">
-                            RU
-                        </div>
+                        <div>
+                            <span class="text-gray-500 font-bold"> {{task.created_at|timesince}} </span>
                     </div>
-                    <div>
-                        <span class="text-gray-500 font-bold">9 months ago</span>
-                    </div>
+    
+                </div>
+
+                {% endfor %}
         
+        
+            </div>                   
+                
+        </div>
+
+        {% endblock tasks %}
+
+
+
+
+
+        {% comment %}                     
                     <div class="flex items-center gap-3">
                         <div class="w-2 h-2 bg-yellow-400 rounded-full"></div>
                         <div><span class="text-gray-500 font-bold">Normal Task</span></div>
@@ -66,6 +111,8 @@ Manager Dashboard
                     <div>
                         <span class="text-gray-500 font-bold">9 months ago</span>
                     </div>
+
+
         
                     <div class="flex items-center gap-3">
                         <div class="w-2 h-2 bg-red-400 rounded-full"></div>
@@ -89,12 +136,5 @@ Manager Dashboard
                     <div>
                         <span class="text-gray-500 font-bold">9 months ago</span>
                     </div>
-        
-                </div>
-        
-        
-            </div>                   
-                
-        </div>
 
-        {% endblock tasks %}
+         {% endcomment %}

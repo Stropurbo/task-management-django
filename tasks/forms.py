@@ -1,5 +1,5 @@
 from django import forms
-from tasks.models import Task
+from tasks.models import Task, TaskDetail
 
 # Django Form
 class TaskForm(forms.Form):
@@ -16,8 +16,9 @@ class TaskForm(forms.Form):
         ]
 
 class StyleFormMixing:
-    default_class = "border to-black shadow-sm focus:border-x-black focus:ring-black rounded-2xl"
-    default_style = "border: 1px solid black; text-align: center; margin: 10px"
+    default_class = "border to-black shadow-sm focus:border-x-black focus:ring-black rounded-2xl w-full text-center "
+    default_style = "border: 1px solid black; text-align: center; margin: 10px; width: 100%; padding: 10px"
+    default_margin = "border: 1px solid black; margin:10px"
 
     def applyStyleWidget(self):
         for key, field in self.fields.items():
@@ -37,12 +38,12 @@ class StyleFormMixing:
                 field.widget.attrs.update({
                     'class' : self.default_class,
                     'placeholder' : f"Enter {field.label.lower()}",
-                    'style': self.default_style
+                    'style': self.default_margin
                 })
             elif isinstance(field.widget, forms.CheckboxSelectMultiple):
                 field.widget.attrs.update({
                     'placeholder' : f"Enter {field.label.lower()}",
-                    
+                    # 'style': self.default_margin
                 })
 
 # Django Model Form
@@ -66,26 +67,11 @@ class TaskModelForm(StyleFormMixing,forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.applyStyleWidget()
         
-
-
-        # widgets = {
-        #     'title': forms.TextInput(attrs={
-        #         'class': "border to-black shadow-sm focus:border-x-black focus:ring-black rounded-2xl ",
-        #         'placeholder': "Enter Your name",
-        #         'style': "border: 1px solid black; text-align: center; margin-inline-start: 10px" 
-        #     }),
-        #     'descrition': forms.Textarea(attrs={
-        #         'class': "border:1px solid-black shadow-sm focus:border-x-black focus:ring-black rounded-2xl",
-        #         'placeholder': "Enter Your name",
-        #         'style': "text-align: center; border: 1px solid black; margin: 10px"
-        #     }),
-        #     'due_date' : forms.SelectDateWidget(attrs={
-        #         'class': "border:1px solid-black shadow-sm focus:border-x-black focus:ring-black rounded-2xl",
-        #     'style': "text-align: center; border: 1px solid black; margin: 5px"
-        #     }),
-        #     'assigned_to' : forms.CheckboxSelectMultiple(attrs={
-        #         'class': "border:1px solid-black shadow-sm focus:border-x-black focus:ring-black rounded-2xl",
-        #         'style': "text-align: center; border: 1px solid black; margin: 5px"
-        #     }),
-        # }
+class TaskDetailModelForm(StyleFormMixing, forms.ModelForm):
+    class Meta:
+        model = TaskDetail
+        fields = ['priority', 'notes']
     
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.applyStyleWidget()
